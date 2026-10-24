@@ -74,7 +74,7 @@ namespace Fluffium.KurenaA2T
             if (result.LeftArm != null && result.RightArm != null
                 && (result.LeftArm == result.RightArm || result.LeftArm.IsChildOf(result.RightArm) || result.RightArm.IsChildOf(result.LeftArm)))
             {
-                return "Left arm と Right arm には、互いに親子関係のない別々のボーンを指定してください。";
+                return "衣装のLeft arm と衣装のRight arm には、互いに親子関係のない別々のボーンを指定してください。";
             }
             return null;
         }

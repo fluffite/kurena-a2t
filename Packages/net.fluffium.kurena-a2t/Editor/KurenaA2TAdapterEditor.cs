@@ -69,10 +69,10 @@ namespace Fluffium.KurenaA2T
         {
             EditorGUILayout.LabelField("処理対象", EditorStyles.boldLabel);
 
-            var left = DrawOverrideField("Left arm", Adapter.leftArmOverride, resolved.LeftDetected);
-            if (left != Adapter.leftArmOverride) Modify("Left arm の変更", a => a.leftArmOverride = left);
-            var right = DrawOverrideField("Right arm", Adapter.rightArmOverride, resolved.RightDetected);
-            if (right != Adapter.rightArmOverride) Modify("Right arm の変更", a => a.rightArmOverride = right);
+            var left = DrawOverrideField("衣装のLeft arm", Adapter.leftArmOverride, resolved.LeftDetected);
+            if (left != Adapter.leftArmOverride) Modify("衣装のLeft arm の変更", a => a.leftArmOverride = left);
+            var right = DrawOverrideField("衣装のRight arm", Adapter.rightArmOverride, resolved.RightDetected);
+            if (right != Adapter.rightArmOverride) Modify("衣装のRight arm の変更", a => a.rightArmOverride = right);
 
             if (resolved.Candidates.Count == 0) return;
 
@@ -167,8 +167,8 @@ namespace Fluffium.KurenaA2T
             var manual = Adapter.rotationSource == KurenaA2TAdapter.RotationSource.Manual;
             using (new EditorGUI.DisabledScope(!manual))
             {
-                var left = DrawRotationField("Left arm", resolved.LeftArm, manual ? Adapter.manualLeft : WrapEuler(resolved.LeftDelta), resolved.LeftDelta.HasValue);
-                var right = DrawRotationField("Right arm", resolved.RightArm, manual ? Adapter.manualRight : WrapEuler(resolved.RightDelta), resolved.RightDelta.HasValue);
+                var left = DrawRotationField("衣装のLeft arm", resolved.LeftArm, manual ? Adapter.manualLeft : WrapEuler(resolved.LeftDelta), resolved.LeftDelta.HasValue);
+                var right = DrawRotationField("衣装のRight arm", resolved.RightArm, manual ? Adapter.manualRight : WrapEuler(resolved.RightDelta), resolved.RightDelta.HasValue);
                 if (manual && (left != Adapter.manualLeft || right != Adapter.manualRight))
                 {
                     Modify("回転量の変更", a =>
