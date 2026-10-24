@@ -13,7 +13,7 @@
   "changelogUrl": "https://github.com/fluffite/kurena-a2t/blob/main/Packages/net.fluffium.kurena-a2t/CHANGELOG.md",
   "licensesUrl": "https://github.com/fluffite/kurena-a2t/blob/main/Packages/net.fluffium.kurena-a2t/LICENSE",
   "vpmDependencies": {
-    "nadena.dev.ndmf": ">=1.14.0 <2.0.0"
+    "nadena.dev.ndmf": ">=1.13.0 <2.0.0"
   },
   "legacyFolders": {}
 }
