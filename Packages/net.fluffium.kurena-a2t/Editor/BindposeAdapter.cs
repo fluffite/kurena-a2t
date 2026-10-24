@@ -38,6 +38,13 @@ namespace Fluffium.KurenaA2T
     internal static class BindposeAdapter
     {
         /// <summary>
+        /// バックアップの複製に使う Unsupported の API の動作を確認した Unity のバージョン。
+        /// </summary>
+        public const string VerifiedUnityVersion = "2022.3";
+
+        public static bool IsVerifiedUnityVersion => Application.unityVersion.StartsWith(VerifiedUnityVersion + ".");
+
+        /// <summary>
         /// 衣装のルート以下で、指定した腕ボーン以下のボーンを参照している SkinnedMeshRenderer を集める。
         /// </summary>
         public static List<SkinnedMeshRenderer> FindAffectedRenderers(Transform outfitRoot, IList<Transform> armBones)
@@ -200,11 +207,10 @@ namespace Fluffium.KurenaA2T
             GameObject backupObject = null;
             if (backup)
             {
-                backupObject = Object.Instantiate(outfitRoot.gameObject, outfitRoot.parent);
+                backupObject = DuplicateForBackup(outfitRoot);
+                Undo.RecordObject(backupObject, "Kurena-chan's A to T Adapter");
                 backupObject.name = outfitRoot.name + "_Backup";
-                backupObject.transform.SetSiblingIndex(outfitRoot.GetSiblingIndex() + 1);
                 backupObject.SetActive(false);
-                Undo.RegisterCreatedObjectUndo(backupObject, "Kurena-chan's A to T Adapter");
             }
 
             for (var i = 0; i < renderers.Count; i++)
@@ -216,6 +222,47 @@ namespace Fluffium.KurenaA2T
 
             Undo.CollapseUndoOperations(group);
             return backupObject;
+        }
+
+        /// <summary>
+        /// 衣装のルートを、ヒエラルキーの Duplicate（Ctrl+D）と同じ方法で複製する（Prefab とのつながりを保つ）。
+        /// Unsupported の API を使うため、複製できなかったときは通常の複製（Prefab とのつながりなし）にする。
+        /// </summary>
+        static GameObject DuplicateForBackup(Transform outfitRoot)
+        {
+            if (!IsVerifiedUnityVersion)
+            {
+                Debug.LogWarning($"[Kurena-chan's A to T Adapter] バックアップの複製は Unity {VerifiedUnityVersion} で動作を確認した方法で行っています。" +
+                                 $"現在の Unity（{Application.unityVersion}）では、Prefab とのつながりを保てない場合があります。");
+            }
+
+            // Duplicate は選択中のオブジェクトを複製するので、一時的に衣装のルートだけを選択する
+            var previousSelection = Selection.objects;
+            var previousActive = Selection.activeObject;
+            GameObject duplicate = null;
+            try
+            {
+                Selection.objects = new Object[] { outfitRoot.gameObject };
+                Unsupported.DuplicateGameObjectsUsingPasteboard();
+                var selected = Selection.activeGameObject;
+                if (selected != null && selected != outfitRoot.gameObject && selected.transform.parent == outfitRoot.parent)
+                {
+                    duplicate = selected;
+                }
+            }
+            finally
+            {
+                Selection.objects = previousSelection;
+                Selection.activeObject = previousActive;
+            }
+
+            if (duplicate != null) return duplicate;
+
+            Debug.LogWarning("[Kurena-chan's A to T Adapter] Prefab とのつながりを保った複製ができなかったため、通常の複製でバックアップを作成しました。");
+            duplicate = Object.Instantiate(outfitRoot.gameObject, outfitRoot.parent);
+            duplicate.transform.SetSiblingIndex(outfitRoot.GetSiblingIndex() + 1);
+            Undo.RegisterCreatedObjectUndo(duplicate, "Kurena-chan's A to T Adapter");
+            return duplicate;
         }
     }
 }

@@ -449,6 +449,13 @@ namespace Fluffium.KurenaA2T
             using (new EditorGUI.IndentLevelScope())
             {
                 _backup = EditorGUILayout.ToggleLeft("反映前の衣装オブジェクトのバックアップを残す", _backup);
+                if (_replace && _backup && !BindposeAdapter.IsVerifiedUnityVersion)
+                {
+                    EditorGUILayout.HelpBox(
+                        $"バックアップの複製は Unity {BindposeAdapter.VerifiedUnityVersion} で動作を確認した方法で行っています。" +
+                        $"現在の Unity（{Application.unityVersion}）では、Prefab とのつながりを保てない場合があります。",
+                        MessageType.Warning);
+                }
             }
             _singleFile = EditorGUILayout.ToggleLeft("複数のメッシュを１ファイルにまとめる", _singleFile);
 

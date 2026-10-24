@@ -3,6 +3,13 @@
 このプロジェクトの主な変更点を記録します。
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に、バージョン番号は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [0.1.1] - 2026-10-24
+
+### 変更
+
+- バックアップを、ヒエラルキーの Duplicate（Ctrl+D）と同じ方法で作るようにした。Prefab から配置した衣装は、Prefab とのつながりを保ったままバックアップされる。
+- Unity 2022.3 以外で実行している場合は、バックアップについて警告を表示するようにした。
+
 ## [0.1.0] - 2026-10-24
 
 ### 追加
