@@ -1,9 +1,9 @@
 {
   "name": "net.fluffium.kurena-a2t",
   "displayName": "Kurena-chan's A to T Adapter",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "unity": "2022.3",
-  "description": "Converts outfit meshes from A-pose to T-pose by rewriting the bindposes of the upper arm bones, without moving any bones.",
+  "description": "Converts outfit meshes from A-pose to T-pose by rewriting the bindposes of the upper arm bones. Applied non-destructively with NDMF, without modifying mesh assets or moving any bones.",
   "author": {
     "name": "fluffite",
     "url": "https://github.com/fluffite"
@@ -12,6 +12,8 @@
   "documentationUrl": "https://github.com/fluffite/kurena-a2t#readme",
   "changelogUrl": "https://github.com/fluffite/kurena-a2t/blob/main/Packages/net.fluffium.kurena-a2t/CHANGELOG.md",
   "licensesUrl": "https://github.com/fluffite/kurena-a2t/blob/main/Packages/net.fluffium.kurena-a2t/LICENSE",
-  "vpmDependencies": {},
+  "vpmDependencies": {
+    "nadena.dev.ndmf": ">=1.14.0 <2.0.0"
+  },
   "legacyFolders": {}
 }

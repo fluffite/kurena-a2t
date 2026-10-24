@@ -1,14 +1,20 @@
 {
     "name": "net.fluffium.kurena-a2t.Editor",
     "rootNamespace": "Fluffium.KurenaA2T",
-    "references": [],
+    "references": [
+        "net.fluffium.kurena-a2t.Runtime",
+        "nadena.dev.ndmf",
+        "nadena.dev.ndmf.runtime"
+    ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "System.Collections.Immutable.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],

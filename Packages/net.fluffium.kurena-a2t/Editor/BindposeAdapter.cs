@@ -195,15 +195,11 @@ namespace Fluffium.KurenaA2T
         }
 
         /// <summary>
-        /// 各 SkinnedMeshRenderer のメッシュを置き換える（Undo 可能）。
+        /// 各 SkinnedMeshRenderer のメッシュを置き換える（Undo 可能。Undo のグループは呼び出し側でまとめる）。
         /// backup が true なら、置き換え前に衣装のルートを複製し、"_Backup" を付けて非アクティブにしておく。
         /// </summary>
         public static GameObject ReplaceMeshes(Transform outfitRoot, IList<SkinnedMeshRenderer> renderers, IList<Mesh> meshes, bool backup)
         {
-            Undo.IncrementCurrentGroup();
-            Undo.SetCurrentGroupName("Kurena-chan's A to T Adapter");
-            var group = Undo.GetCurrentGroup();
-
             GameObject backupObject = null;
             if (backup)
             {
@@ -219,8 +215,6 @@ namespace Fluffium.KurenaA2T
                 renderers[i].sharedMesh = meshes[i];
                 PrefabUtility.RecordPrefabInstancePropertyModifications(renderers[i]);
             }
-
-            Undo.CollapseUndoOperations(group);
             return backupObject;
         }
 
