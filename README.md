@@ -1,76 +1,57 @@
-# VPM Package Template
+# Kurena-chan's A to T Adapter
 
-Starter for making Packages, including automation for building and publishing them.
+A ポーズのまま着せた衣装を、T ポーズのアバター（くれなちゃん）に合わせて T ポーズに補正する Unity エディタ拡張です。
 
-Once you're all set up, you'll be able to push changes to this repository and have .zip and .unitypackage versions automatically generated, and a listing made which works in the VPM for delivering updates for this package. If you want to make a listing with a variety of packages, check out our [template-package-listing](https://github.com/vrchat-community/template-package-listing) repo.
+衣装のボーンは動かさず、衣装メッシュの bindpose（メッシュとボーンの対応付け）だけを書き換えます。
+そのため、Modular Avatar の Setup Outfit の前後どちらで使っても、Setup Outfit に打ち消されることはありません。
 
-## ▶ Getting Started
+## 想定している使い方
 
-* Press [![Use This Template](https://user-images.githubusercontent.com/737888/185467681-e5fdb099-d99f-454b-8d9e-0760e5a6e588.png)](https://github.com/vrchat-community/template-package/generate)
-to start a new GitHub project based on this template.
-  * Choose a fitting repository name and description.
-  * Set the visibility to 'Public'. You can also choose 'Private' and change it later.
-  * You don't need to select 'Include all branches.'
-* Clone this repository locally using Git.
-  * If you're unfamiliar with Git and GitHub, [visit GitHub's documentation](https://docs.github.com/en/get-started/quickstart/git-and-github-learning-resources) to learn more.
-* Add the folder to Unity Hub and open it as a Unity Project.
-* After opening the project, wait while the VPM resolver is downloaded and added to your project.
-  * This gives you access to the VPM Package Maker and Package Resolver tools.
+アバターと衣装の組み合わせによっては、Modular Avatar の Setup Outfit を実行したあとも、衣装の腕が A ポーズのような見た目のまま残ることがあります。
+このツールは、そのような場合に上腕のメッシュを回転させて、T ポーズのアバターに合わせるためのものです。
 
-## 🚇 Migrating Assets Package
-Full details at [Converting Assets to a VPM Package](https://vcc.docs.vrchat.com/guides/convert-unitypackage)
+## 動作環境
 
-## ✏️ Working on Your Package
+- Unity 2022.3
+- 依存パッケージはありません（VRChat Avatars SDK・Modular Avatar がなくても動作します）
 
-* Delete the "Packages/com.vrchat.demo-template" directory or reuse it for your own package.
-  * If you reuse the package, don't forget to rename it and add generated meta files to your repository!
-* Update the `.gitignore` file in the "Packages" directory to include your package.
-  * For example, change `!com.vrchat.demo-template` to `!com.username.package-name`.
-  * `.gitignore` files normally *exclude* the contents of your "Packages" directory. This `.gitignore` in this template show how to *include* the demo package. You can easily change this out for your own package name.
-* Open the Unity project and work on your package's files in your favorite code editor.
-* When you're ready, commit and push your changes.
-* Once you've set up the automation as described below, you can easily publish new versions.
+## 導入
 
-## 🤖 Setting up the Automation
+1. VRChat Creator Companion（VCC）の Settings → Packages → Add Repository で、次の URL を追加します。
+   ```
+   https://fluffite.github.io/vpm/index.json
+   ```
+2. プロジェクトの Manage Project で「Kurena-chan's A to T Adapter」を追加します。
 
-Create a repository variable with the name and value described below.
-For details on how to create repository variables, see [Creating Configuration Variables for a Repository](https://docs.github.com/en/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository).
-Make sure you are creating a **repository variable**, and not a **repository secret**.
+VCC を使わない場合は、[Releases](https://github.com/fluffite/kurena-a2t/releases) から `.unitypackage` をダウンロードしてインポートすることもできます。
 
-* `PACKAGE_NAME`: the name of your package, like `com.vrchat.demo-template`.
+## 使い方
 
-Finally, go to the "Settings" page for your repo, then choose "Pages", and look for the heading "Build and deployment". Change the "Source" dropdown from "Deploy from a branch" to "GitHub Actions".
+1. 次のどちらかの方法でウィンドウを開きます。
+   - ヒエラルキーで衣装のゲームオブジェクトを右クリックし、`FluffLabs > Kurena-chan's A to T Adapter` を選ぶ
+   - メニューバーの `Tools > FluffLabs > Kurena-chan's A to T Adapter` を選ぶ
+2. 「処理対象」で衣装のゲームオブジェクトを指定します。
+   - Left arm / Right arm は自動検出されます。通常、変更する必要はありません。
+   - 「処理対象のメッシュ」を開くと、変換するメッシュを選べます（腕のボーンにウェイトがあるメッシュが初期状態で選ばれています）。
+3. 「回転量」を選びます。
+   - **ビルトイン（くれなちゃん）**：くれなちゃん向けの計測値を使います。通常はこれを選びます。
+   - **アーマチュアの差分**：回転前・回転後の 2 つのアーマチュアから、腕の回転の差分を求めます。
+   - **直接入力**：親ボーン（肩）の空間でのオイラー角を入力します。
+4. [プレビュー] で変換後の見た目を確認します（Scene ビューのみ。シーンには変更を加えません）。
+5. [保存...]（メッシュが複数の場合は [各メッシュを保存...]）を押し、保存先を選びます。
 
-That's it!
-Some other notes:
-* We highly recommend you keep the existing folder structure of this template.
-  * The root of the project should be a Unity project.
-  * Your packages should be in the "Packages" directory.
-  * If you deviate from this folder structure, you'll need to update the paths that assume your package is in the "Packages" directory on lines 24, 38, 41 and 57.
-* If you want to store and generate your web files in a folder other than "Website" in the root, you can change the `listPublicDirectory` item [here in build-listing.yml](.github/workflows/build-listing.yml#L17).
+### 追加の処理
 
-## 🎉 Publishing a Release
+- **保存後に衣装オブジェクトに反映する**：保存したメッシュを衣装の SkinnedMeshRenderer に割り当てます。Undo（Ctrl+Z）で元に戻せます。
+- **反映前の衣装オブジェクトのバックアップを残す**：反映前の衣装を複製し、名前に `_Backup` を付けて非アクティブにして残します。
+- **複数のメッシュを１ファイルにまとめる**：オンにすると、すべてのメッシュを 1 つの `.asset` ファイルに保存します。オフのときは、選んだフォルダにメッシュごとの `<メッシュ名>_A2T.asset` を保存します。
 
-You can make a release by running the [Build Release](.github/workflows/release.yml) action. The version specified in your `package.json` file will be used to define the version of the release.
+## 注意事項
 
-## 📃 Rebuilding the Listing
+- 元のメッシュは変更しません。変換したメッシュは新しいアセットとして保存します。
+- 保存したファイルは、Undo しても削除されません。
+- メッシュごとに保存するとき、同じ名前のファイルがあれば確認なしで上書きします（GUID は保たれるため、以前の割り当ては外れません）。
 
-Whenever you make a change to a release - manually publishing it, or manually creating, editing or deleting a release, the [Build Repo Listing](.github/workflows/build-listing.yml) action will make a new index of all the releases available, and publish them as a website hosted fore free on [GitHub Pages](https://pages.github.com/). This listing can be used by the VPM to keep your package up to date, and the generated index page can serve as a simple landing page with info for your package. The URL for your package will be in the format `https://username.github.io/repo-name`.
+## ライセンス
 
-## 🏠 Customizing the Landing Page (Optional)
-
-The action which rebuilds the listing also publishes a landing page. The source for this page is in `Website/index.html`. The automation system uses [Scriban](https://github.com/scriban/scriban) to fill in the objects like `{{ this }}` with information from the latest release's manifest, so it will stay up-to-date with the name, id and description that you provide there. You are welcome to modify this page however you want - just use the existing `{{ template.objects }}` to fill in that info wherever you like. The entire contents of your "Website" folder are published to your GitHub Page each time.
-
-## 💻 Technical Stuff
-
-You are welcome to make your own changes to the automation process to make it fit your needs, and you can create Pull Requests if you have some changes you think we should adopt. Here's some more info on the included automation:
-
-### Build Release Action
-[release.yml](/.github/workflows/release.yml)
-
-This is a composite action combining a variety of existing GitHub Actions and some shell commands to create both a .zip of your Package and a .unitypackage. It creates a release which is named for the `version` in the `package.json` file found in your target Package, and publishes the zip, the unitypackage and the package.json file to this release.
-
-### Build Repo Listing
-[build-listing.yml](.github/workflows/build-listing.yml)
-
-This is a composite action which builds a vpm-compatible [Repo Listing](https://vcc.docs.vrchat.com/vpm/repos) based on the releases you've created. In order to find all your releases and combine them into a listing, it checks out [another repository](https://github.com/vrchat-community/package-list-action) which has a [Nuke](https://nuke.build/) project which includes the VPM core lib to have access to its types and methods. This project will be expanded to include more functionality in the future - for now, the action just calls its `BuildRepoListing` target.
+[MIT License](LICENSE)
